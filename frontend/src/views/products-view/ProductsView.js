@@ -4,7 +4,6 @@ import { useProductAnalytics } from '../../composables/useProductAnalytics'
 import AnalyticsBarChart from '../../components/analytics-bar-chart/AnalyticsBarChart.vue'
 import KpiCard from '../../components/kpi-card/KpiCard.vue'
 import ServerTable from '../../components/server-table/ServerTable.vue'
-import { productPath } from '../../utils/productUrl'
 import { PRODUCT_COLUMNS } from './productsColumns'
 
 function useProductsView() {
@@ -161,6 +160,8 @@ function useProductsView() {
       value: n((summary.value?.lowStock ?? 0) + (summary.value?.outOfStock ?? 0)),
     },
   ])
+
+  const productPath = (product) => `/product/${encodeURIComponent(product.sku)}`
 
   return {
     analytics,

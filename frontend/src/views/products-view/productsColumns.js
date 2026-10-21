@@ -1,8 +1,14 @@
 // Every column the products table can show. The format of a column (and of its filter) is described
-// in `composables/useServerTable.js` and in `docs/TABLES.md`.
+// in `composables/useServerTable.js`.
 // The API filters, sorts and pages (`GET /api/products`).
 export const PRODUCT_COLUMNS = [
-  { key: 'image', labelKey: 'products.columns.image', sortable: false, visible: true, width: 72 },
+  {
+    key: 'image',
+    labelKey: 'products.columns.image',
+    sortable: false,
+    visible: true,
+    width: 72,
+  },
   {
     filter: { param: 'title', type: 'text' },
     key: 'title',
@@ -32,7 +38,7 @@ export const PRODUCT_COLUMNS = [
     width: 150,
   },
   {
-    filter: { max: 2000, min: 0, param: 'price', step: 10, type: 'range' },
+    filter: { max: 100000, min: 0, param: 'price', step: 10, type: 'range' },
     key: 'price',
     labelKey: 'products.columns.price',
     visible: true,
@@ -52,10 +58,19 @@ export const PRODUCT_COLUMNS = [
     width: 140,
   },
   {
-    filter: { max: 30, min: 0, param: 'discountPercentage', step: 1, type: 'range' },
+    filter: {
+      max: 30,
+      min: 0,
+      param: 'discountPercentage',
+      step: 1,
+      type: 'range',
+    },
     key: 'discountPercentage',
     labelKey: 'products.columns.discount',
-    value: (p) => (p.discountPercentage != null ? `${Math.round(p.discountPercentage)}%` : '—'),
+    value: (p) =>
+      p.discountPercentage != null
+        ? `${Math.round(p.discountPercentage)}%`
+        : '—',
     width: 140,
   },
   {
@@ -70,7 +85,13 @@ export const PRODUCT_COLUMNS = [
     width: 170,
   },
   {
-    filter: { max: 25, min: 1, param: 'minimumOrderQuantity', step: 1, type: 'range' },
+    filter: {
+      max: 25,
+      min: 1,
+      param: 'minimumOrderQuantity',
+      step: 1,
+      type: 'range',
+    },
     key: 'minimumOrderQuantity',
     labelKey: 'products.columns.minOrder',
     width: 160,

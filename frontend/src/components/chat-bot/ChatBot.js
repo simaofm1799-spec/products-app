@@ -29,7 +29,8 @@ function useChatBot() {
 
     try {
       const data = await apiRequest('/api/chat', { auth: true, body: { question, history }, method: 'POST' })
-      messages.value.push({ role: 'assistant', text: data.answer })
+      const text = data.errorCode ? t(`chat.errors.${data.errorCode}`) : data.answer
+      messages.value.push({ role: 'assistant', text })
     } catch {
       messages.value.push({ role: 'assistant', text: t('chat.error') })
     } finally {

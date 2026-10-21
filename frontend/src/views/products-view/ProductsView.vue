@@ -60,7 +60,7 @@
         icon="mdi-currency-usd"
         show-axis
         :datasets="priceChart.datasets"
-        :format-label="(value) => `Δ ${money(value[1] - value[0])}`"
+        :format-label="(value) => `${money(value[1] - value[0])} diff`"
         :format-tooltip="priceTooltip"
         :labels="priceChart.labels"
         :loading="loading"

@@ -3,7 +3,6 @@ import { useI18n } from 'vue-i18n'
 import { apiRequest } from '../../api'
 import { useAuth } from '../../composables/useAuth'
 import ServerTable from '../../components/server-table/ServerTable.vue'
-import { productPath } from '../../utils/productUrl'
 import { makeStockColumns } from './stockColumns'
 
 function useStockView() {
@@ -223,6 +222,8 @@ function useStockView() {
   }
 
   // ── Helpers ────────────────────────────────────────────────────────────────
+  const productPath = (product) => `/product/${encodeURIComponent(product.sku)}`
+
   const stockChipColor = (status) => {
     const s = (status ?? '').toLowerCase()
     if (s === 'in stock') return 'success'

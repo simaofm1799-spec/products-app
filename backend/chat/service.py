@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 from openai import AsyncOpenAI, APIStatusError
 
-from chat.tools import make_tools, tool_schema
+from chat.tools import make_tools
 from common.config import GROQ_API_KEY
 from common.dummyjson import dummyjson
 
@@ -16,7 +16,8 @@ _MODEL = "openai/gpt-oss-120b"
 
 _SYSTEM_PROMPT = """You are a helpful data assistant for a product management application.
 You have access to sales data (~6 000 transactions), a product catalogue (~190 products), and user demographics.
-Always call the appropriate tool to query real data before responding — never guess or fabricate numbers.
+Always call the appropriate tool to query real data before responding — never guess or fabricate numbers or fields.
+If a tool result does not contain the information needed to answer the question, say clearly that you do not have access to that data — do not invent or infer it.
 Always reply in the same language the user used — including refusals and error messages. If the user writes in Portuguese, every response must be in Portuguese, no exceptions.
 Be concise: 2–3 sentences unless a ranked list is more useful. For product lists include the product name and units sold.
 Never expose internal numeric IDs (such as product IDs, user IDs, warehouse IDs, sale IDs) in your replies — refer to things by their name instead."""
@@ -47,7 +48,7 @@ class ChatService:
         log.info("User demographics loaded (%s users)", len(data["users"]))
         return pd.DataFrame(data["users"])
 
-    async def answer(self, question: str, history: list[dict] | None = None) -> str:
+    async def answer(self, question: str, history: list[dict] | None = None, user: dict | None = None) -> str:
         from products.service import product_service
         from warehouses.service import warehouse_service
 
@@ -56,11 +57,20 @@ class ChatService:
         products = await product_service._all_products()
         products_map = {prod["id"]: prod for prod in products}
 
-        tools = make_tools(sales_df, users_df, products_map, warehouse_service)
-        tools_map = {fn.__name__: fn for fn in tools}
-        tool_schemas = [tool_schema(fn) for fn in tools]
+        user_role = (user or {}).get("role", "user")
+        user_id = int((user or {}).get("sub", 0)) or None
 
-        messages: list[dict] = [{"role": "system", "content": _SYSTEM_PROMPT}]
+        tools_map, tool_schemas = make_tools(
+            sales_df, users_df, products_map, warehouse_service,
+            user_role=user_role, user_id=user_id,
+        )
+
+        role_context = (
+            f"\nThe current user has role '{user_role}'."
+            + (" They can only access data for their own warehouse."
+               if user_role == "user" else "")
+        )
+        messages: list[dict] = [{"role": "system", "content": _SYSTEM_PROMPT + role_context}]
         for entry in (history or []):
             messages.append({"role": entry["role"], "content": entry["text"]})
         messages.append({"role": "user", "content": question})
@@ -76,7 +86,7 @@ class ChatService:
                 msg = response.choices[0].message
 
                 if not msg.tool_calls:
-                    return msg.content or ""
+                    return {"answer": msg.content or "", "errorCode": None}
 
                 messages.append(msg)
 
@@ -97,10 +107,10 @@ class ChatService:
         except APIStatusError as exc:
             log.error("Groq API error %s: %s", exc.status_code, exc.message)
             if exc.status_code == 413:
-                return "O histórico da conversa ficou demasiado longo. Limpa o histórico e tenta novamente."
+                return {"answer": None, "errorCode": "CHAT_HISTORY_TOO_LONG"}
             if exc.status_code == 429:
-                return "Estou a receber demasiados pedidos neste momento. Aguarda um pouco e tenta novamente."
-            return "Ocorreu um erro ao contactar o modelo de IA. Tenta novamente."
+                return {"answer": None, "errorCode": "CHAT_RATE_LIMIT"}
+            return {"answer": None, "errorCode": "CHAT_ERROR"}
 
 
 chat_service = ChatService()

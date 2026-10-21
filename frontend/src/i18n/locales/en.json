@@ -4,6 +4,11 @@
     "empty": "Hello! Try asking, for example: \"What are the most popular products in the 25–30 age range?\"",
     "clearHistory": "Clear history",
     "error": "Could not get a response. Please try again.",
+    "errors": {
+      "CHAT_ERROR": "An error occurred contacting the AI model. Please try again.",
+      "CHAT_HISTORY_TOO_LONG": "The conversation history is too long. Clear the history and try again.",
+      "CHAT_RATE_LIMIT": "Too many requests at the moment. Please wait a moment and try again."
+    },
     "placeholder": "Ask a question...",
     "title": "Assistant"
   },
@@ -161,7 +166,7 @@
     },
     "prices": {
       "range": "Price range",
-      "subtitle": "Cheapest to dearest product of each category. Δ is the maximum difference; biggest first.",
+      "subtitle": "Cheapest to dearest product of each category. diff is the price spread; biggest first.",
       "title": "Price range by category",
       "tooltip": "{min} – {max} (difference: {spread})"
     },

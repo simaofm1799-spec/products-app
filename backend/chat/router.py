@@ -17,7 +17,8 @@ class ChatRequest(BaseModel):
 
 
 class ChatResponse(BaseModel):
-    answer: str
+    answer: str | None = None
+    errorCode: str | None = None
 
 
 router = APIRouter(
@@ -28,6 +29,5 @@ router = APIRouter(
 
 
 @router.post("", response_model=ChatResponse, summary="Ask a natural-language question about the data")
-async def ask(body: ChatRequest, _user: dict = Depends(get_current_user)) -> dict:
-    answer = await chat_service.answer(body.question, [h.model_dump() for h in body.history])
-    return {"answer": answer}
+async def ask(body: ChatRequest, user: dict = Depends(get_current_user)) -> dict:
+    return await chat_service.answer(body.question, [h.model_dump() for h in body.history], user)

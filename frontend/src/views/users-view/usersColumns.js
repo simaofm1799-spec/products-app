@@ -1,7 +1,5 @@
-import { formatDate } from '../../utils/formatDate'
-
 // Every column the users table can show. The format of a column (and of its filter) is described
-// in `composables/useServerTable.js` and in `docs/TABLES.md`.
+// in `composables/useServerTable.js`.
 // The API filters, sorts and pages, and can sort by any column (nested fields included).
 export const USER_COLUMNS = [
   { key: 'image', labelKey: 'users.columns.image', sortable: false, visible: true, width: 72 },
@@ -53,7 +51,7 @@ export const USER_COLUMNS = [
     filter: { param: 'birthDate', type: 'text' },
     key: 'birthDate',
     labelKey: 'users.columns.birthDate',
-    value: (user) => formatDate(user.birthDate),
+    value: (user) => (user.birthDate ? String(user.birthDate).replaceAll('-', '/') : ''),
     width: 190,
   },
   {

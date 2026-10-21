@@ -51,7 +51,7 @@ def require_role(*allowed_roles: str):
     return check_role
 
 
-# Permission matrix (see docs/PERMISSIONS.md): everybody reads; moderators also update;
+# Permission matrix: everybody reads; moderators also update;
 # only admins create and delete.
 require_creator = require_role("admin")
 require_deleter = require_role("admin")

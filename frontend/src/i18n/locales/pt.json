@@ -4,6 +4,11 @@
     "empty": "Olá! Experimenta perguntar, por exemplo: \"Quais os produtos mais populares na faixa etária dos 25 aos 30 anos?\"",
     "clearHistory": "Limpar histórico",
     "error": "Não foi possível obter uma resposta. Tenta novamente.",
+    "errors": {
+      "CHAT_ERROR": "Ocorreu um erro ao contactar o modelo de IA. Tenta novamente.",
+      "CHAT_HISTORY_TOO_LONG": "O histórico da conversa ficou demasiado longo. Limpa o histórico e tenta novamente.",
+      "CHAT_RATE_LIMIT": "Estão a ser feitos demasiados pedidos neste momento. Aguarda um pouco e tenta novamente."
+    },
     "placeholder": "Faz uma pergunta...",
     "title": "Assistente"
   },
@@ -161,7 +166,7 @@
     },
     "prices": {
       "range": "Intervalo de preços",
-      "subtitle": "Do produto mais barato ao mais caro de cada categoria. Δ é a diferença máxima; maior primeiro.",
+      "subtitle": "Do produto mais barato ao mais caro de cada categoria. diff é a amplitude de preço; maior primeiro.",
       "title": "Intervalo de preços por categoria",
       "tooltip": "{min} – {max} (diferença: {spread})"
     },

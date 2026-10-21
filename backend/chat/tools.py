@@ -1,91 +1,81 @@
-import inspect
-import re
-import types
-from typing import Any, Callable, Literal, Union, get_args, get_origin
+from typing import Any, Literal
 
 import pandas as pd
+from pydantic import BaseModel, Field
 
 
-def _annotation_to_json(annotation) -> dict:
-    if annotation is inspect.Parameter.empty:
-        return {"type": "string"}
+# ── Parameter schemas (used to generate OpenAI tool schemas via Pydantic) ─────
 
-    origin = get_origin(annotation)
-    args = get_args(annotation)
-
-    # X | None  (Python 3.10+ UnionType) or Optional[X]
-    is_union = (
-        (hasattr(types, "UnionType") and isinstance(annotation, types.UnionType))
-        or origin is Union
-    )
-    if is_union:
-        non_none = [a for a in args if a is not type(None)]
-        if non_none:
-            return _annotation_to_json(non_none[0])
-
-    # Literal["a", "b"] → enum
-    if origin is Literal:
-        return {"type": "string", "enum": list(args)}
-
-    _MAP = {str: "string", int: "integer", float: "number", bool: "boolean"}
-    if annotation in _MAP:
-        return {"type": _MAP[annotation]}
-
-    if origin is list:
-        item = args[0] if args else str
-        return {"type": "array", "items": _annotation_to_json(item)}
-
-    return {"type": "string"}
+class _SalesFilters(BaseModel):
+    category: str | None = Field(None, description="Filter by product category (case-insensitive).")
+    date_from: str | None = Field(None, description="Start date inclusive (YYYY-MM-DD).")
+    date_to: str | None = Field(None, description="End date inclusive (YYYY-MM-DD).")
+    gender: Literal["male", "female"] | None = Field(None, description="Filter by buyer gender (male or female).")
+    min_age: int | None = Field(None, description="Minimum buyer age (inclusive).")
+    max_age: int | None = Field(None, description="Maximum buyer age (inclusive).")
+    warehouse_id: int | None = Field(None, description="Filter by warehouse ID (1 to 20).")
 
 
-def _parse_arg_docs(docstring: str) -> dict[str, str]:
-    """Extract param descriptions from a Google-style Args: section."""
-    result: dict[str, str] = {}
-    if not docstring:
-        return result
-    in_args = False
-    current: str | None = None
-    for line in docstring.splitlines():
-        if line.strip() == "Args:":
-            in_args = True
-            continue
-        if not in_args:
-            continue
-        # New top-level section — stop
-        if line and not line.startswith("    ") and line.strip():
-            break
-        m = re.match(r"    (\w+):\s*(.*)", line)
-        if m:
-            current = m.group(1)
-            result[current] = m.group(2).strip()
-        elif current and line.strip():
-            result[current] += " " + line.strip()
-    return result
+class _TopProductsParams(_SalesFilters):
+    limit: int = Field(5, description="Number of top products to return (default 5).")
 
 
-def tool_schema(fn: Callable) -> dict:
-    """Derive an OpenAI-format tool schema from a function's signature and docstring."""
-    sig = inspect.signature(fn)
-    doc = inspect.getdoc(fn) or ""
-    description = re.split(r"\nArgs:", doc)[0].strip()
-    param_docs = _parse_arg_docs(doc)
+class _RecentSalesParams(_SalesFilters):
+    limit: int = Field(5, description="Number of recent sales to return (default 5).")
 
-    properties: dict[str, dict] = {}
-    for name, param in sig.parameters.items():
-        schema = _annotation_to_json(param.annotation)
-        if name in param_docs:
-            schema["description"] = param_docs[name]
-        properties[name] = schema
 
+class _SalesOverviewParams(_SalesFilters):
+    pass
+
+
+class _SalesRevenueParams(_SalesFilters):
+    pass
+
+
+class _WarehouseStockParams(BaseModel):
+    warehouse_id: int = Field(..., description="Numeric warehouse ID (1–20). Required.")
+    product_name: str | None = Field(None, description="Filter by product name (partial match, case-insensitive). Omit to get all products.")
+    product_id: int | None = Field(None, description="Filter by exact product ID. Omit to get all products.")
+    limit: int = Field(10, description="Maximum number of products to return (default 10).")
+
+
+class _LookupWarehousesParams(BaseModel):
+    name: str | None = Field(None, description="Partial warehouse name to search for (case-insensitive).")
+    city: str | None = Field(None, description="City name to search for (case-insensitive).")
+    warehouse_id: int | None = Field(None, description="Exact warehouse ID if already known.")
+    user_id: int | None = Field(None, description="ID of the responsible user — returns the warehouse(s) assigned to them.")
+
+
+class _LookupUsersParams(BaseModel):
+    user_ids: list[int] = Field(..., description="List of user IDs to look up.")
+
+
+class _FindUsersParams(BaseModel):
+    name: str = Field(..., description="Full or partial name (case-insensitive), matched against first and last name.")
+
+
+class _UserPurchasesParams(BaseModel):
+    user_id: int = Field(..., description="Numeric ID of the user.")
+    limit: int = Field(10, description="Maximum number of purchases to return (default 10).")
+
+
+class _TopWarehousesParams(BaseModel):
+    limit: int = Field(5, description="Number of top warehouses to return (default 5).")
+
+
+# ── Schema helper ──────────────────────────────────────────────────────────────
+
+def _tool_schema(name: str, description: str, model: type[BaseModel]) -> dict:
+    params = model.model_json_schema()
+    params.pop("title", None)
+    params.pop("$defs", None)
     return {
         "type": "function",
-        "function": {
-            "name": fn.__name__,
-            "description": description,
-            "parameters": {"type": "object", "properties": properties},
-        },
+        "function": {"name": name, "description": description, "parameters": params},
     }
 
+
+# ── Filter helper ──────────────────────────────────────────────────────────────
 
 def _apply_filters(
     df: pd.DataFrame,
@@ -123,54 +113,42 @@ def _apply_filters(
     return filtered
 
 
+# ── Tools ──────────────────────────────────────────────────────────────────────
+
 def make_tools(
     sales_df: pd.DataFrame,
     users_df: pd.DataFrame,
     products_map: dict[int, dict],
     warehouse_service=None,
-) -> list:
-    """Return the list of tool callables passed to the OpenAI SDK as tool schemas."""
+    user_role: str = "admin",
+    user_id: int | None = None,
+) -> tuple[dict[str, Any], list[dict]]:
+    """Return (tools_map, tool_schemas) for the OpenAI chat completions API."""
+
+    _is_restricted = user_role == "user"
+
+    # Warehouse assigned to this user — only relevant when role is "user"
+    _user_warehouse_id: int | None = None
+    if _is_restricted and warehouse_service and user_id:
+        for w in warehouse_service.all():
+            if w.get("userId") == user_id:
+                _user_warehouse_id = w["id"]
+                break
 
     def _params(**kwargs) -> dict[str, Any]:
         return {k: v for k, v in kwargs.items() if v is not None}
 
-    def top_products(
-        limit: int = 5,
-        category: str | None = None,
-        date_from: str | None = None,
-        date_to: str | None = None,
-        gender: Literal["male", "female"] | None = None,
-        min_age: int | None = None,
-        max_age: int | None = None,
-        warehouse_id: int | None = None,
-    ) -> list[dict]:
-        """Returns top products ranked by total quantity sold (best sellers).
-
-        Use for questions about popular products, best sellers, or most sold items.
-        Only apply the filters explicitly mentioned in the question.
-
-        Args:
-            limit: Number of top products to return (default 5).
-            category: Filter by product category (case-insensitive).
-            date_from: Start date inclusive (YYYY-MM-DD).
-            date_to: End date inclusive (YYYY-MM-DD).
-            gender: Filter by buyer gender (male or female).
-            min_age: Minimum buyer age (inclusive).
-            max_age: Maximum buyer age (inclusive).
-            warehouse_id: Filter by warehouse ID (1 to 20).
-        """
+    def top_products(limit=5, category=None, date_from=None, date_to=None,
+                     gender=None, min_age=None, max_age=None, warehouse_id=None):
         filtered = _apply_filters(
             sales_df,
             _params(category=category, date_from=date_from, date_to=date_to,
                     gender=gender, min_age=min_age, max_age=max_age, warehouse_id=warehouse_id),
-            users_df,
-            products_map,
+            users_df, products_map,
         )
         top = (
             filtered.groupby("productId")["quantity"]
-            .sum()
-            .sort_values(ascending=False)
-            .head(limit)
+            .sum().sort_values(ascending=False).head(limit)
         )
         return [
             {
@@ -182,43 +160,18 @@ def make_tools(
             for pid, qty in top.items()
         ]
 
-    def recent_sales(
-        limit: int = 5,
-        category: str | None = None,
-        date_from: str | None = None,
-        date_to: str | None = None,
-        gender: Literal["male", "female"] | None = None,
-        min_age: int | None = None,
-        max_age: int | None = None,
-        warehouse_id: int | None = None,
-    ) -> list[dict]:
-        """Returns the most recent individual sales transactions, sorted newest first.
-
-        Use for questions about recent sales, the latest sale, or recent activity.
-        Only apply the filters explicitly mentioned in the question.
-
-        Args:
-            limit: Number of recent sales to return (default 5).
-            category: Filter by product category (case-insensitive).
-            date_from: Start date inclusive (YYYY-MM-DD).
-            date_to: End date inclusive (YYYY-MM-DD).
-            gender: Filter by buyer gender (male or female).
-            min_age: Minimum buyer age (inclusive).
-            max_age: Maximum buyer age (inclusive).
-            warehouse_id: Filter by warehouse ID (1 to 20).
-        """
+    def recent_sales(limit=5, category=None, date_from=None, date_to=None,
+                     gender=None, min_age=None, max_age=None, warehouse_id=None):
         filtered = _apply_filters(
             sales_df,
             _params(category=category, date_from=date_from, date_to=date_to,
                     gender=gender, min_age=min_age, max_age=max_age, warehouse_id=warehouse_id),
-            users_df,
-            products_map,
+            users_df, products_map,
         )
         users_by_id = {}
         if not users_df.empty:
             for _, u in users_df.iterrows():
                 users_by_id[int(u["id"])] = u.dropna().to_dict()
-
         result = []
         for _, row in filtered.sort_values("date", ascending=False).head(limit).iterrows():
             prod = products_map.get(int(row["productId"]), {})
@@ -230,47 +183,21 @@ def make_tools(
             })
         return result
 
-    def sales_overview(
-        category: str | None = None,
-        date_from: str | None = None,
-        date_to: str | None = None,
-        gender: Literal["male", "female"] | None = None,
-        min_age: int | None = None,
-        max_age: int | None = None,
-        warehouse_id: int | None = None,
-    ) -> dict:
-        """Returns a high-level sales summary: total orders, total quantity, date range, and top categories.
-
-        Use for general questions about overall sales performance or trends.
-        Only apply the filters explicitly mentioned in the question.
-
-        Args:
-            category: Filter by product category (case-insensitive).
-            date_from: Start date inclusive (YYYY-MM-DD).
-            date_to: End date inclusive (YYYY-MM-DD).
-            gender: Filter by buyer gender (male or female).
-            min_age: Minimum buyer age (inclusive).
-            max_age: Maximum buyer age (inclusive).
-            warehouse_id: Filter by warehouse ID (1 to 20).
-        """
+    def sales_overview(category=None, date_from=None, date_to=None,
+                       gender=None, min_age=None, max_age=None, warehouse_id=None):
         filtered = _apply_filters(
             sales_df,
             _params(category=category, date_from=date_from, date_to=date_to,
                     gender=gender, min_age=min_age, max_age=max_age, warehouse_id=warehouse_id),
-            users_df,
-            products_map,
+            users_df, products_map,
         )
-        total_orders = int(len(filtered))
-        total_quantity = int(filtered["quantity"].sum()) if not filtered.empty else 0
         categorized = filtered.copy()
         categorized["category"] = categorized["productId"].map(
             lambda pid: products_map.get(int(pid), {}).get("category", "Unknown")
         )
         top_cats = (
             categorized.groupby("category")["quantity"]
-            .sum()
-            .sort_values(ascending=False)
-            .head(5)
+            .sum().sort_values(ascending=False).head(5)
         )
         return {
             "date_range": {
@@ -280,31 +207,15 @@ def make_tools(
             "top_categories": [
                 {"category": cat, "total_sold": int(qty)} for cat, qty in top_cats.items()
             ],
-            "total_orders": total_orders,
-            "total_quantity_sold": total_quantity,
+            "total_orders": int(len(filtered)),
+            "total_quantity_sold": int(filtered["quantity"].sum()) if not filtered.empty else 0,
         }
 
-    def warehouse_stock(
-        warehouse_id: int,
-        product_name: str | None = None,
-        product_id: int | None = None,
-        limit: int = 10,
-    ) -> list[dict]:
-        """Returns stock levels for products in a specific warehouse, sorted by stock descending.
-
-        Use for questions about inventory in a warehouse: which product has the most/least stock,
-        or the stock level of a specific product in a given warehouse.
-        Call lookup_warehouses first if you only have a warehouse name, not its numeric ID.
-
-        Args:
-            warehouse_id: Numeric warehouse ID (1–20). Required.
-            product_name: Filter by product name (partial match, case-insensitive). Omit to get all products.
-            product_id: Filter by exact product ID. Omit to get all products.
-            limit: Maximum number of products to return (default 10).
-        """
+    def warehouse_stock(warehouse_id, product_name=None, product_id=None, limit=10):
         if warehouse_service is None:
             return [{"error": "Warehouse service unavailable."}]
-
+        if _is_restricted and warehouse_id != _user_warehouse_id:
+            return [{"error": "Access denied: you can only view stock for your own warehouse."}]
         if product_id is not None:
             candidates = [products_map[product_id]] if product_id in products_map else []
         elif product_name:
@@ -312,10 +223,8 @@ def make_tools(
             candidates = [p for p in products_map.values() if q in p.get("title", "").lower()]
         else:
             candidates = list(products_map.values())
-
         if not candidates:
             return [{"error": f"No product found matching '{product_name or product_id}'."}]
-
         return sorted(
             [
                 {
@@ -330,28 +239,13 @@ def make_tools(
             reverse=True,
         )[:limit]
 
-    def lookup_warehouses(
-        name: str | None = None,
-        city: str | None = None,
-        warehouse_id: int | None = None,
-        user_id: int | None = None,
-    ) -> list[dict]:
-        """Returns warehouse details (id, name, city, state, userId) matching the search.
-
-        The userId field is the user responsible for (assigned to) that warehouse.
-        Use this to resolve a warehouse name or city to its numeric ID before querying stock.
-        Also useful when the user mentions a city or region instead of a warehouse name.
-        To find which warehouse a person is responsible for, first call find_users to get
-        their user ID, then pass it here as user_id.
-
-        Args:
-            name: Partial warehouse name to search for (case-insensitive).
-            city: City name to search for (case-insensitive).
-            warehouse_id: Exact warehouse ID if already known.
-            user_id: ID of the responsible user — returns the warehouse(s) assigned to them.
-        """
+    def lookup_warehouses(name=None, city=None, warehouse_id=None, user_id=None):
         if warehouse_service is None:
             return [{"error": "Warehouse service unavailable."}]
+        if _is_restricted:
+            if _user_warehouse_id is None:
+                return [{"error": "You have no warehouse assigned."}]
+            return [w for w in warehouse_service.all() if w["id"] == _user_warehouse_id]
         warehouses = warehouse_service.all()
         if warehouse_id is not None:
             return [w for w in warehouses if w["id"] == warehouse_id]
@@ -366,15 +260,7 @@ def make_tools(
             results = [w for w in results if q in w.get("city", "").lower()]
         return results
 
-    def lookup_users(user_ids: list[int]) -> list[dict]:
-        """Returns profile information for a list of user IDs.
-
-        Use this whenever you have a userId from any other tool result and need to know
-        the user's name or other details.
-
-        Args:
-            user_ids: List of user IDs to look up.
-        """
+    def lookup_users(user_ids):
         if users_df.empty:
             return []
         result = []
@@ -384,16 +270,7 @@ def make_tools(
                 result.append(row.iloc[0].dropna().to_dict())
         return result
 
-    def find_users(name: str) -> list[dict]:
-        """Finds users whose name matches the search, returning their id and profile details.
-
-        Use this to resolve a person's name to their user ID — for example before checking
-        which warehouse a user is responsible for (pass the returned id to lookup_warehouses
-        as user_id).
-
-        Args:
-            name: Full or partial name (case-insensitive), matched against first and last name.
-        """
+    def find_users(name):
         if users_df.empty:
             return []
         query = name.lower().strip()
@@ -406,7 +283,152 @@ def make_tools(
                 result.append(user.dropna().to_dict())
         return result
 
-    return [
-        top_products, recent_sales, sales_overview, warehouse_stock,
-        lookup_warehouses, lookup_users, find_users,
+    def sales_revenue(category=None, date_from=None, date_to=None,
+                      gender=None, min_age=None, max_age=None, warehouse_id=None):
+        filtered = _apply_filters(
+            sales_df,
+            _params(category=category, date_from=date_from, date_to=date_to,
+                    gender=gender, min_age=min_age, max_age=max_age, warehouse_id=warehouse_id),
+            users_df, products_map,
+        )
+        total_revenue = 0.0
+        category_revenue: dict[str, float] = {}
+        for _, row in filtered.iterrows():
+            prod = products_map.get(int(row["productId"]), {})
+            price = prod.get("price") or 0.0
+            revenue = price * int(row["quantity"])
+            total_revenue += revenue
+            cat = prod.get("category", "Unknown")
+            category_revenue[cat] = category_revenue.get(cat, 0.0) + revenue
+        top_cats = sorted(category_revenue.items(), key=lambda x: x[1], reverse=True)[:5]
+        return {
+            "total_revenue": round(total_revenue, 2),
+            "total_orders": int(len(filtered)),
+            "revenue_by_category": [
+                {"category": cat, "revenue": round(rev, 2)} for cat, rev in top_cats
+            ],
+            "date_range": {
+                "from": filtered["date"].min() if not filtered.empty else None,
+                "to": filtered["date"].max() if not filtered.empty else None,
+            },
+        }
+
+    def user_purchases(user_id, limit=10):
+        filtered = sales_df[
+            (sales_df["status"] == "completed") & (sales_df["userId"] == user_id)
+        ]
+        result = []
+        for _, row in filtered.sort_values("date", ascending=False).head(limit).iterrows():
+            prod = products_map.get(int(row["productId"]), {})
+            price = prod.get("price") or 0.0
+            qty = int(row["quantity"])
+            result.append({
+                "date": row["date"],
+                "product": prod.get("title", f"Product {int(row['productId'])}"),
+                "category": prod.get("category"),
+                "quantity": qty,
+                "unit_price": price,
+                "total": round(price * qty, 2),
+            })
+        return result
+
+    def top_warehouses(limit=5):
+        if warehouse_service is None:
+            return [{"error": "Warehouse service unavailable."}]
+        if _is_restricted:
+            return [{"error": "Access denied: warehouse rankings are only available to administrators."}]
+        completed = sales_df[sales_df["status"] == "completed"]
+        totals: dict[int, dict] = {}
+        for _, row in completed.iterrows():
+            wid = int(row["warehouseId"])
+            prod = products_map.get(int(row["productId"]), {})
+            price = prod.get("price") or 0.0
+            qty = int(row["quantity"])
+            if wid not in totals:
+                totals[wid] = {"quantity": 0, "revenue": 0.0}
+            totals[wid]["quantity"] += qty
+            totals[wid]["revenue"] += price * qty
+        warehouses_by_id = {w["id"]: w for w in warehouse_service.all()}
+        ranked = sorted(totals.items(), key=lambda x: x[1]["quantity"], reverse=True)[:limit]
+        return [
+            {
+                "warehouse_id": wid,
+                "name": warehouses_by_id.get(wid, {}).get("name"),
+                "city": warehouses_by_id.get(wid, {}).get("city"),
+                "state": warehouses_by_id.get(wid, {}).get("state"),
+                "total_sold": data["quantity"],
+                "revenue": round(data["revenue"], 2),
+            }
+            for wid, data in ranked
+        ]
+
+    tools_map = {
+        "top_products": top_products,
+        "recent_sales": recent_sales,
+        "sales_overview": sales_overview,
+        "warehouse_stock": warehouse_stock,
+        "lookup_warehouses": lookup_warehouses,
+        "lookup_users": lookup_users,
+        "find_users": find_users,
+        "sales_revenue": sales_revenue,
+        "user_purchases": user_purchases,
+        "top_warehouses": top_warehouses,
+    }
+
+    tool_schemas = [
+        _tool_schema("top_products",
+            "Returns top products ranked by total quantity sold (best sellers). "
+            "Use for questions about popular products, best sellers, or most sold items. "
+            "Only apply the filters explicitly mentioned in the question.",
+            _TopProductsParams),
+        _tool_schema("recent_sales",
+            "Returns the most recent individual sales transactions, sorted newest first. "
+            "Use for questions about recent sales, the latest sale, or recent activity. "
+            "Only apply the filters explicitly mentioned in the question.",
+            _RecentSalesParams),
+        _tool_schema("sales_overview",
+            "Returns a high-level sales summary: total orders, total quantity, date range, and top categories. "
+            "Use for general questions about overall sales performance or trends. "
+            "Only apply the filters explicitly mentioned in the question.",
+            _SalesOverviewParams),
+        _tool_schema("warehouse_stock",
+            "Returns stock levels for products in a specific warehouse, sorted by stock descending. "
+            "Use for questions about inventory in a warehouse: which product has the most/least stock, "
+            "or the stock level of a specific product in a given warehouse. "
+            "Call lookup_warehouses first if you only have a warehouse name, not its numeric ID.",
+            _WarehouseStockParams),
+        _tool_schema("lookup_warehouses",
+            "Returns warehouse details (id, name, city, state, userId) matching the search. "
+            "The userId field is the user responsible for (assigned to) that warehouse. "
+            "Use this to resolve a warehouse name or city to its numeric ID before querying stock. "
+            "To find which warehouse a person is responsible for, first call find_users to get "
+            "their user ID, then pass it here as user_id.",
+            _LookupWarehousesParams),
+        _tool_schema("lookup_users",
+            "Returns profile information for a list of user IDs. "
+            "Use this whenever you have a userId from any other tool result and need to know "
+            "the user's name or other details.",
+            _LookupUsersParams),
+        _tool_schema("find_users",
+            "Finds users whose name matches the search, returning their id and profile details. "
+            "Use this to resolve a person's name to their user ID — for example before checking "
+            "which warehouse a user is responsible for (pass the returned id to lookup_warehouses as user_id).",
+            _FindUsersParams),
+        _tool_schema("sales_revenue",
+            "Returns total revenue and a breakdown by category, calculated as quantity × product price. "
+            "Use for questions about money earned, revenue, income, or financial performance. "
+            "Only apply the filters explicitly mentioned in the question.",
+            _SalesRevenueParams),
+        _tool_schema("user_purchases",
+            "Returns the purchase history of a specific user, most recent first. "
+            "Use for questions about what a specific user has bought, their spending, or order history. "
+            "Call find_users first to resolve a name to a user_id if needed.",
+            _UserPurchasesParams),
+        _tool_schema("top_warehouses",
+            "Returns warehouses ranked by total quantity sold, with revenue. "
+            "Use for questions about which warehouse sells the most, warehouse performance comparisons, "
+            "or overall warehouse rankings.",
+            _TopWarehousesParams),
     ]
+
+    return tools_map, tool_schemas

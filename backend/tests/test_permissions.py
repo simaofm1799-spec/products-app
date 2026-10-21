@@ -20,7 +20,7 @@ ACTIONS = {
     "update_put": [("PUT", "/api/users/1", {"age": 30}), ("PUT", "/api/products/1", {"stock": 3})],
 }
 
-# role -> actions it may do (the matrix of docs/PERMISSIONS.md)
+# role -> actions it may do (the permission matrix)
 ALLOWED = {
     "admin": {"create", "delete", "read", "update_patch", "update_put"},
     "moderator": {"read", "update_patch", "update_put"},
