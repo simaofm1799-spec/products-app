@@ -1,0 +1,22 @@
+[
+  { "id":  1, "name": "Pacific Northwest Hub",       "city": "Seattle",       "state": "WA", "lat":  47.6062, "lon": -122.3321, "userId":  1 },
+  { "id":  2, "name": "Pacific Coast Depot",          "city": "Portland",      "state": "OR", "lat":  45.5051, "lon": -122.6750, "userId":  2 },
+  { "id":  3, "name": "Northern California Center",   "city": "Sacramento",    "state": "CA", "lat":  38.5816, "lon": -121.4944, "userId":  3 },
+  { "id":  4, "name": "Bay Area Logistics",           "city": "San Jose",      "state": "CA", "lat":  37.3382, "lon": -121.8863, "userId":  4 },
+  { "id":  5, "name": "Southern California Hub",      "city": "Los Angeles",   "state": "CA", "lat":  34.0522, "lon": -118.2437, "userId":  5 },
+  { "id":  6, "name": "Southwest Distribution",       "city": "Phoenix",       "state": "AZ", "lat":  33.4484, "lon": -112.0740, "userId":  6 },
+  { "id":  7, "name": "Desert Southwest Depot",       "city": "Albuquerque",   "state": "NM", "lat":  35.0844, "lon": -106.6504, "userId":  7 },
+  { "id":  8, "name": "Mountain West Hub",            "city": "Denver",        "state": "CO", "lat":  39.7392, "lon": -104.9903, "userId":  8 },
+  { "id":  9, "name": "Texas Gulf Center",            "city": "Houston",       "state": "TX", "lat":  29.7604, "lon":  -95.3698, "userId":  9 },
+  { "id": 10, "name": "Texas North Depot",            "city": "Dallas",        "state": "TX", "lat":  32.7767, "lon":  -96.7970, "userId": 10 },
+  { "id": 11, "name": "Mid-South Hub",                "city": "Nashville",     "state": "TN", "lat":  36.1627, "lon":  -86.7816, "userId": 11 },
+  { "id": 12, "name": "Great Plains Center",          "city": "Kansas City",   "state": "MO", "lat":  39.0997, "lon":  -94.5786, "userId": 12 },
+  { "id": 13, "name": "Upper Midwest Hub",            "city": "Minneapolis",   "state": "MN", "lat":  44.9778, "lon":  -93.2650, "userId": 13 },
+  { "id": 14, "name": "Great Lakes Depot",            "city": "Chicago",       "state": "IL", "lat":  41.8781, "lon":  -87.6298, "userId": 14 },
+  { "id": 15, "name": "Great Lakes East Center",      "city": "Detroit",       "state": "MI", "lat":  42.3314, "lon":  -83.0458, "userId": 15 },
+  { "id": 16, "name": "Southeast Hub",                "city": "Atlanta",       "state": "GA", "lat":  33.7490, "lon":  -84.3880, "userId": 16 },
+  { "id": 17, "name": "Florida Distribution Center",  "city": "Miami",         "state": "FL", "lat":  25.7617, "lon":  -80.1918, "userId": 17 },
+  { "id": 18, "name": "Mid-Atlantic Hub",             "city": "Washington",    "state": "DC", "lat":  38.9072, "lon":  -77.0369, "userId": 18 },
+  { "id": 19, "name": "Northeast Metro Center",       "city": "New York",      "state": "NY", "lat":  40.7128, "lon":  -74.0060, "userId": 19 },
+  { "id": 20, "name": "New England Depot",            "city": "Boston",        "state": "MA", "lat":  42.3601, "lon":  -71.0589, "userId": 20 }
+]

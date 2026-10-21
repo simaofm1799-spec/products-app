@@ -1,0 +1,7 @@
+{
+  "watch": ["backend"],
+  "ext": "py",
+  "ignore": ["backend/.venv", "**/__pycache__"],
+  "delay": "300ms",
+  "exec": "cd backend && .venv/bin/python -m uvicorn main:app --port 8000"
+}

@@ -1,0 +1,268 @@
+{
+  "chat": {
+    "button": "Assistente de dados",
+    "empty": "Olá! Experimenta perguntar, por exemplo: \"Quais os produtos mais populares na faixa etária dos 25 aos 30 anos?\"",
+    "clearHistory": "Limpar histórico",
+    "error": "Não foi possível obter uma resposta. Tenta novamente.",
+    "placeholder": "Faz uma pergunta...",
+    "title": "Assistente"
+  },
+  "productFilters": {
+    "__other__": "Outra"
+  },
+  "errors": {
+    "BAD_REQUEST": "O pedido não é válido.",
+    "FORBIDDEN": "Não tens permissão para fazer isto.",
+    "INTERNAL_ERROR": "Ocorreu um erro do nosso lado. Tenta novamente mais tarde.",
+    "INVALID_LOGIN": "Utilizador ou palavra-passe inválidos.",
+    "METHOD_NOT_ALLOWED": "Esta ação não é permitida.",
+    "NETWORK_ERROR": "Não foi possível contactar o servidor. Verifica a ligação.",
+    "NOT_FOUND": "O recurso pedido não foi encontrado.",
+    "PRODUCT_NOT_FOUND": "O produto {id} não foi encontrado.",
+    "TOKEN_EXPIRED": "A tua sessão expirou. Inicia sessão novamente.",
+    "TOKEN_INVALID": "A tua sessão não é válida. Inicia sessão novamente.",
+    "TOKEN_MISSING": "Não tens sessão iniciada. Inicia sessão novamente.",
+    "UNAUTHORIZED": "Não tens sessão iniciada.",
+    "UNKNOWN": "Ocorreu um erro inesperado.",
+    "UPSTREAM_ERROR": "O serviço de dados está indisponível. Tenta novamente mais tarde.",
+    "UPSTREAM_TIMEOUT": "O serviço de dados demorou demasiado a responder. Tenta novamente.",
+    "USER_NOT_FOUND": "O utilizador {id} não foi encontrado.",
+    "WAREHOUSE_NOT_FOUND": "O armazém {id} não foi encontrado.",
+    "VALIDATION_ERROR": "Alguns dados não são válidos."
+  },
+  "fields": {
+    "age": "Idade",
+    "birthDate": "Data de nascimento",
+    "bloodGroup": "Grupo sanguíneo",
+    "brand": "Marca",
+    "category": "Categoria",
+    "description": "Descrição",
+    "discountPercentage": "Desconto",
+    "email": "Email",
+    "eyeColor": "Cor dos olhos",
+    "firstName": "Nome próprio",
+    "gender": "Género",
+    "height": "Altura",
+    "image": "Imagem",
+    "images": "Imagens",
+    "lastName": "Apelido",
+    "limit": "Limite",
+    "maidenName": "Nome de solteira",
+    "order": "Ordem",
+    "password": "Palavra-passe",
+    "phone": "Telefone",
+    "price": "Preço",
+    "product_id": "Id do produto",
+    "q": "Pesquisa",
+    "role": "Perfil",
+    "skip": "Saltar",
+    "sku": "SKU",
+    "sortBy": "Ordenar por",
+    "stock": "Stock",
+    "tags": "Etiquetas",
+    "thumbnail": "Miniatura",
+    "title": "Título",
+    "user_id": "Id do utilizador",
+    "username": "Utilizador",
+    "weight": "Peso"
+  },
+  "filters": {
+    "by": "Filtrar por {column}",
+    "clear": "Limpar filtros",
+    "placeholder": "Filtrar",
+    "reset": "Limpar"
+  },
+  "gender": {
+    "female": "Feminino",
+    "male": "Masculino",
+    "other": "Outro"
+  },
+  "login": {
+    "password": "Palavra-passe",
+    "submit": "Entrar",
+    "subtitle": "Inicia sessão para continuar",
+    "testHint": "Teste: {user} / {pass}",
+    "title": "Bem-vindo de volta",
+    "username": "Utilizador"
+  },
+  "menu": {
+    "account": "Menu da conta",
+    "language": "Idioma",
+    "logout": "Terminar sessão"
+  },
+  "nav": {
+    "products": "Produtos",
+    "stock": "Stock",
+    "toggle": "Alternar menu de navegação",
+    "users": "Utilizadores"
+  },
+  "product": {
+    "back": "Voltar aos produtos",
+    "breadcrumb": "Produtos",
+    "details": "Detalhes do produto",
+    "dimensions": "Dimensões (L × A × P)",
+    "minOrder": "Encomenda mínima",
+    "notFound": "Produto não encontrado",
+    "policy": "Política de devoluções",
+    "reviews": "Avaliações",
+    "shipping": "Envio",
+    "sku": "SKU",
+    "stock": "{count} em stock",
+    "tags": "Etiquetas",
+    "warranty": "Garantia",
+    "weight": "Peso"
+  },
+  "products": {
+    "availability": {
+      "available": "Disponíveis",
+      "outOfStock": "Sem stock",
+      "subtitle": "Produtos com e sem stock, por categoria.",
+      "title": "Produtos disponíveis por categoria"
+    },
+    "brands": {
+      "reviews": "Avaliações",
+      "subtitle": "{brands} marcas ordenadas pelo número total de avaliações. {excluded} produtos sem marca ficam de fora.",
+      "title": "Marcas com mais avaliações",
+      "tooltipNoRating": "Ainda sem avaliações",
+      "tooltipProducts": "{count} produtos",
+      "tooltipRating": "Avaliação média: {rating} / 5",
+      "tooltipReviews": "{count} avaliações",
+      "tooltipScore": "Pontuação ponderada (complementar): {score}"
+    },
+    "columns": {
+      "availabilityStatus": "Disponibilidade",
+      "brand": "Marca",
+      "category": "Categoria",
+      "discount": "Desconto",
+      "image": "Foto",
+      "minOrder": "Enc. mínima",
+      "price": "Preço",
+      "rating": "Avaliação",
+      "sku": "SKU",
+      "stock": "Stock",
+      "title": "Nome",
+      "weight": "Peso"
+    },
+    "kpis": {
+      "atRisk": "A precisar de reposição",
+      "atRiskHint": "{out} sem stock, {low} a acabar",
+      "categories": "Categorias",
+      "products": "Produtos",
+      "rating": "Avaliação média",
+      "ratingHint": "em 5, de todas as avaliações",
+      "stock": "Unidades em stock"
+    },
+    "lowStock": {
+      "none": "Nenhum produto está a ficar sem stock.",
+      "out": "Sem stock",
+      "subtitle": "Sem stock ou com {threshold} unidades ou menos, os mais vazios primeiro.",
+      "title": "Produtos a repor",
+      "units": "{count} unidades"
+    },
+    "prices": {
+      "range": "Intervalo de preços",
+      "subtitle": "Do produto mais barato ao mais caro de cada categoria. Δ é a diferença máxima; maior primeiro.",
+      "title": "Intervalo de preços por categoria",
+      "tooltip": "{min} – {max} (diferença: {spread})"
+    },
+    "stock": {
+      "subtitle": "Total de unidades disponíveis em cada categoria.",
+      "title": "Stock por categoria",
+      "tooltip": "{count} unidades",
+      "units": "Unidades"
+    },
+    "subtitle": "Que marcas agradam, o que está disponível, como variam os preços e o que está a acabar.",
+    "table": {
+      "lowStock": "Stock baixo",
+      "lowStockLimit": "Stock baixo (≤ {threshold} unidades)",
+      "title": "Todos os produtos"
+    },
+    "title": "Produtos"
+  },
+  "stock": {
+    "autoSuggest": "Sugestão automática",
+    "columns": {
+      "order": "Encomendar",
+      "sales90d": "Vendas (90 dias)"
+    },
+    "confirmCount": "{count} produtos",
+    "confirmOrder": "Confirmar encomenda ({count})",
+    "confirmTitle": "Resumo da encomenda",
+    "editStock": "Editar stock",
+    "newStock": "Novo stock",
+    "noOrderNeeded": "Não é preciso nenhuma encomenda — os níveis de stock estão adequados.",
+    "noWarehouse": "Não tens um armazém atribuído. Contacta um administrador.",
+    "save": "Guardar",
+    "saveSuccess": "Stock atualizado.",
+    "subtitle": "Monitoriza e atualiza os níveis de stock do armazém.",
+    "tableTitle": "Produtos",
+    "title": "Gestão de Stock",
+    "totalOrder": "Total a encomendar",
+    "units": "unidades"
+  },
+  "roles": {
+    "admin": "Administrador",
+    "moderator": "Moderador",
+    "user": "Utilizador"
+  },
+  "stats": {
+    "byState": "Utilizadores por estado",
+    "byUniversity": "Utilizadores por universidade",
+    "empty": "Sem dados para mostrar.",
+    "retry": "Tentar de novo",
+    "showAll": "Ver todos ({count})",
+    "showTop": "Ver só os {count} primeiros",
+    "summary": "{total} utilizadores em {groups} grupos",
+    "tooltip": "{count} utilizadores ({share})"
+  },
+  "table": {
+    "close": "Fechar",
+    "configure": "Configurar tabela",
+    "groupMain": "Colunas",
+    "groupPinned": "Fixas",
+    "pin": "Fixar coluna",
+    "reset": "Repor predefinições",
+    "subtitle": "Escolhe que colunas aparecem, arrasta para as reordenar e fixa as que ficam à esquerda ao deslocar a tabela.",
+    "title": "Configurar tabela",
+    "unpin": "Desafixar coluna"
+  },
+  "users": {
+    "columns": {
+      "age": "Idade",
+      "birthDate": "Data de nascimento",
+      "bloodGroup": "Grupo sanguíneo",
+      "city": "Cidade",
+      "company": "Empresa",
+      "country": "País",
+      "email": "Email",
+      "eyeColor": "Cor dos olhos",
+      "gender": "Género",
+      "height": "Altura",
+      "image": "Foto",
+      "name": "Nome",
+      "phone": "Telefone",
+      "role": "Perfil",
+      "state": "Estado",
+      "username": "Utilizador",
+      "weight": "Peso"
+    },
+    "subtitle": "Consulta, filtra e analisa os utilizadores.",
+    "tabs": {
+      "distribution": "Distribuição",
+      "table": "Tabela"
+    },
+    "title": "Utilizadores"
+  },
+  "validation": {
+    "INVALID_FORMAT": "formato inválido",
+    "INVALID_OPTION": "opção inválida",
+    "INVALID_TYPE": "tipo de valor inválido",
+    "INVALID_VALUE": "valor inválido",
+    "REQUIRED": "campo obrigatório",
+    "TOO_LARGE": "valor demasiado alto (máximo: {max})",
+    "TOO_LONG": "demasiado longo (tamanho máximo: {max_length})",
+    "TOO_SHORT": "demasiado curto (tamanho mínimo: {min_length})",
+    "TOO_SMALL": "valor demasiado baixo (mínimo: {min})",
+    "UNKNOWN_FIELD": "campo não permitido"
+  }
+}

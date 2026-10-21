@@ -1,0 +1,42 @@
+/* Vuetify's smallest density ("compact") is still 40px tall with 16px text, too big for a
+   filter row: this sets the field to 24px with smaller text, padding and icons */
+.column-filter {
+  :deep(.v-field) {
+    --v-field-input-padding-bottom: 0px;
+    --v-field-input-padding-top: 0px;
+    --v-field-padding-end: 6px;
+    --v-field-padding-start: 8px;
+    --v-icon-size-multiplier: 0.7;
+    --v-input-control-height: 24px;
+    font-size: 0.75rem;
+  }
+
+  :deep(.v-field__input) {
+    min-height: 24px;
+  }
+
+  /* Vuetify aligns the input of a select to the top, which leaves the placeholder above the middle */
+  :deep(.v-select .v-field .v-field__input > input) {
+    align-self: center;
+  }
+
+  :deep(.v-field__append-inner),
+  :deep(.v-field__clearable) {
+    align-items: center;
+    padding-top: 0;
+  }
+
+  /* the range field opens a panel, so it behaves like a button */
+  :deep(.v-text-field input[readonly]) {
+    cursor: pointer;
+  }
+
+  &__panel {
+    padding: 28px 20px 8px;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+  }
+}

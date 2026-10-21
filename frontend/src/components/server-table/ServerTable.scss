@@ -1,0 +1,107 @@
+.server-table {
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 2rem;
+  }
+
+  /* compact rows and header (Vuetify's defaults are 52px and 56px) */
+  &__table {
+    --v-table-header-height: 36px;
+    --v-table-row-height: 38px;
+
+    /* with many columns the table scrolls sideways, without showing the scrollbar */
+    :deep(.v-table__wrapper) {
+      overflow-x: auto;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    /* While loading, Vuetify dims every cell, the pinned ones included (its exception only covers
+       the ones pinned to the right). A dimmed pinned cell is see-through, so the columns that slide
+       under it show: pinned cells stay opaque. */
+    :deep(.v-data-table-column--fixed) {
+      opacity: 1 !important;
+    }
+
+    /* a small gap between the column title and the sort icon */
+    :deep(.v-data-table-header__content) {
+      gap: 6px;
+    }
+
+    /* pinned columns just stay in place: no vertical line separating them from the rest */
+    :deep(.v-data-table-column--last-fixed) {
+      border-right: none;
+    }
+
+    /* no line between the column titles and the filters, and the titles sit at the bottom of their
+       cell, close to the filters */
+    :deep(thead:not(.server-table__filters) > tr > th) {
+      padding-bottom: 2px;
+      border-bottom: none;
+      vertical-align: bottom;
+    }
+
+    /* a smaller footer, in proportion with the compact rows */
+    :deep(.v-data-table-footer) {
+      min-height: 40px;
+      padding: 4px 12px;
+      font-size: 0.8125rem;
+
+      .v-field {
+        --v-field-input-padding-bottom: 0px;
+        --v-field-input-padding-top: 0px;
+        --v-field-padding-end: 6px;
+        --v-field-padding-start: 8px;
+        --v-icon-size-multiplier: 0.75;
+        --v-input-control-height: 26px;
+        font-size: 0.8125rem;
+      }
+
+      .v-field__input {
+        min-height: 26px;
+      }
+
+      .v-field__append-inner {
+        align-items: center;
+        padding-top: 0;
+      }
+
+      .v-select .v-field .v-field__input > input {
+        align-self: center;
+      }
+    }
+
+    :deep(.v-data-table-footer__pagination .v-btn) {
+      --v-btn-height: 26px;
+      width: 26px;
+      height: 26px;
+    }
+  }
+
+  /* the filter row is lower than a data row */
+  &__filters {
+    --v-table-row-height: 38px;
+  }
+
+  &__filter-cell {
+    /* the extra space at the bottom separates the filters from the first row */
+    padding: 3px 8px 10px;
+    border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
+  }
+
+  &__error {
+    margin: 16px;
+    white-space: pre-line;
+  }
+}

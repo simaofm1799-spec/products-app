@@ -1,0 +1,26 @@
+.kpi-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+
+  &__body {
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: 0.8125rem;
+    opacity: 0.65;
+  }
+
+  &__value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  &__hint {
+    font-size: 0.75rem;
+    opacity: 0.55;
+  }
+}

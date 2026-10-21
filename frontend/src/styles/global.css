@@ -1,0 +1,24 @@
+/* General look of the texts. These replace Vuetify's defaults (uppercase buttons with wide letter
+   spacing) in one place, so that every page and component follows the same style.
+   The selectors start at `body` so that they win over Vuetify's own and also reach dialogs and
+   menus, which Vuetify draws outside the root element of the app. */
+
+body .v-btn {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+/* Vuetify's own sizes for the small buttons (12px and 10px) are too small to read */
+body .v-btn--size-small {
+  font-size: 0.8125rem;
+}
+
+body .v-btn--size-x-small {
+  font-size: 0.75rem;
+}
+
+body .v-tab {
+  letter-spacing: 0.01em;
+  text-transform: none;
+}

@@ -1,0 +1,40 @@
+.low-stock-list {
+  padding-bottom: 8px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px 12px;
+  }
+
+  &__title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  &__subtitle {
+    font-size: 0.8125rem;
+    opacity: 0.65;
+  }
+
+  &__alert {
+    margin: 0 16px 16px;
+  }
+
+  &__list {
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  /* the product photos are cut-outs: no background, so they sit directly on the card */
+  &__thumbnail {
+    background: transparent;
+  }
+
+  &__empty {
+    padding: 16px 20px;
+    opacity: 0.65;
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "chat": {
+    "button": "Data assistant",
+    "empty": "Hello! Try asking, for example: \"What are the most popular products in the 25–30 age range?\"",
+    "clearHistory": "Clear history",
+    "error": "Could not get a response. Please try again.",
+    "placeholder": "Ask a question...",
+    "title": "Assistant"
+  },
+  "productFilters": {
+    "__other__": "Other"
+  },
+  "errors": {
+    "BAD_REQUEST": "The request is not valid.",
+    "FORBIDDEN": "You do not have permission to do this.",
+    "INTERNAL_ERROR": "Something went wrong on our side. Please try again later.",
+    "INVALID_LOGIN": "Invalid username or password.",
+    "METHOD_NOT_ALLOWED": "This action is not allowed.",
+    "NETWORK_ERROR": "Could not reach the server. Check your connection.",
+    "NOT_FOUND": "The requested resource was not found.",
+    "PRODUCT_NOT_FOUND": "Product {id} was not found.",
+    "TOKEN_EXPIRED": "Your session has expired. Please sign in again.",
+    "TOKEN_INVALID": "Your session is not valid. Please sign in again.",
+    "TOKEN_MISSING": "You are not signed in. Please sign in again.",
+    "UNAUTHORIZED": "You are not signed in.",
+    "UNKNOWN": "An unexpected error occurred.",
+    "UPSTREAM_ERROR": "The data service is unavailable. Please try again later.",
+    "UPSTREAM_TIMEOUT": "The data service took too long to respond. Please try again.",
+    "USER_NOT_FOUND": "User {id} was not found.",
+    "WAREHOUSE_NOT_FOUND": "Warehouse {id} was not found.",
+    "VALIDATION_ERROR": "Some of the data is not valid."
+  },
+  "fields": {
+    "age": "Age",
+    "birthDate": "Birth date",
+    "bloodGroup": "Blood group",
+    "brand": "Brand",
+    "category": "Category",
+    "description": "Description",
+    "discountPercentage": "Discount",
+    "email": "Email",
+    "eyeColor": "Eye color",
+    "firstName": "First name",
+    "gender": "Gender",
+    "height": "Height",
+    "image": "Image",
+    "images": "Images",
+    "lastName": "Last name",
+    "limit": "Limit",
+    "maidenName": "Maiden name",
+    "order": "Order",
+    "password": "Password",
+    "phone": "Phone",
+    "price": "Price",
+    "product_id": "Product id",
+    "q": "Search",
+    "role": "Role",
+    "skip": "Skip",
+    "sku": "SKU",
+    "sortBy": "Sort by",
+    "stock": "Stock",
+    "tags": "Tags",
+    "thumbnail": "Thumbnail",
+    "title": "Title",
+    "user_id": "User id",
+    "username": "Username",
+    "weight": "Weight"
+  },
+  "filters": {
+    "by": "Filter by {column}",
+    "clear": "Clear filters",
+    "placeholder": "Filter",
+    "reset": "Clear"
+  },
+  "gender": {
+    "female": "Female",
+    "male": "Male",
+    "other": "Other"
+  },
+  "login": {
+    "password": "Password",
+    "submit": "Sign in",
+    "subtitle": "Sign in to continue",
+    "testHint": "Test: {user} / {pass}",
+    "title": "Welcome back",
+    "username": "Username"
+  },
+  "menu": {
+    "account": "Account menu",
+    "language": "Language",
+    "logout": "Log out"
+  },
+  "nav": {
+    "products": "Products",
+    "stock": "Stock",
+    "toggle": "Toggle navigation menu",
+    "users": "Users"
+  },
+  "product": {
+    "back": "Back to products",
+    "breadcrumb": "Products",
+    "details": "Product details",
+    "dimensions": "Dimensions (W × H × D)",
+    "minOrder": "Minimum order",
+    "notFound": "Product not found",
+    "policy": "Return policy",
+    "reviews": "Reviews",
+    "shipping": "Shipping",
+    "sku": "SKU",
+    "stock": "{count} in stock",
+    "tags": "Tags",
+    "warranty": "Warranty",
+    "weight": "Weight"
+  },
+  "products": {
+    "availability": {
+      "available": "Available",
+      "outOfStock": "Out of stock",
+      "subtitle": "Products with stock vs. without, per category.",
+      "title": "Available products by category"
+    },
+    "brands": {
+      "reviews": "Reviews",
+      "subtitle": "{brands} brands ranked by total number of reviews. {excluded} products without a brand are left out.",
+      "title": "Top brands by reviews",
+      "tooltipNoRating": "No ratings yet",
+      "tooltipProducts": "{count} products",
+      "tooltipRating": "Average rating: {rating} / 5",
+      "tooltipReviews": "{count} reviews",
+      "tooltipScore": "Weighted score (complementary): {score}"
+    },
+    "columns": {
+      "availabilityStatus": "Availability",
+      "brand": "Brand",
+      "category": "Category",
+      "discount": "Discount",
+      "image": "Photo",
+      "minOrder": "Min. order",
+      "price": "Price",
+      "rating": "Rating",
+      "sku": "SKU",
+      "stock": "Stock",
+      "title": "Name",
+      "weight": "Weight"
+    },
+    "kpis": {
+      "atRisk": "Need restocking",
+      "atRiskHint": "{out} out of stock, {low} low",
+      "categories": "Categories",
+      "products": "Products",
+      "rating": "Average rating",
+      "ratingHint": "out of 5, from all reviews",
+      "stock": "Units in stock"
+    },
+    "lowStock": {
+      "none": "No product is running out of stock.",
+      "out": "Out of stock",
+      "subtitle": "Out of stock or with {threshold} units or fewer, emptiest first.",
+      "title": "Products to restock",
+      "units": "{count} units"
+    },
+    "prices": {
+      "range": "Price range",
+      "subtitle": "Cheapest to dearest product of each category. Δ is the maximum difference; biggest first.",
+      "title": "Price range by category",
+      "tooltip": "{min} – {max} (difference: {spread})"
+    },
+    "stock": {
+      "subtitle": "Total units available in each category.",
+      "title": "Stock by category",
+      "tooltip": "{count} units",
+      "units": "Units"
+    },
+    "subtitle": "Which brands people like, what is available, how prices vary and what is running out.",
+    "table": {
+      "lowStock": "Low stock",
+      "lowStockLimit": "Low stock (≤ {threshold} units)",
+      "title": "All products"
+    },
+    "title": "Products"
+  },
+  "stock": {
+    "autoSuggest": "Auto-suggest",
+    "columns": {
+      "order": "Order",
+      "sales90d": "Sales (90d)"
+    },
+    "confirmCount": "{count} products",
+    "confirmOrder": "Confirm order ({count})",
+    "confirmTitle": "Order summary",
+    "editStock": "Edit stock",
+    "newStock": "New stock",
+    "noOrderNeeded": "No order needed — stock levels are healthy.",
+    "noWarehouse": "You have not been assigned to a warehouse. Contact an administrator.",
+    "save": "Save",
+    "saveSuccess": "Stock updated.",
+    "subtitle": "Monitor and update warehouse stock levels.",
+    "tableTitle": "Products",
+    "title": "Stock Management",
+    "totalOrder": "Total to order",
+    "units": "units"
+  },
+  "roles": {
+    "admin": "Admin",
+    "moderator": "Moderator",
+    "user": "User"
+  },
+  "stats": {
+    "byState": "Users by state",
+    "byUniversity": "Users by university",
+    "empty": "No data to show.",
+    "retry": "Try again",
+    "showAll": "Show all ({count})",
+    "showTop": "Show only the top {count}",
+    "summary": "{total} users in {groups} groups",
+    "tooltip": "{count} users ({share})"
+  },
+  "table": {
+    "close": "Close",
+    "configure": "Configure table",
+    "groupMain": "Columns",
+    "groupPinned": "Pinned",
+    "pin": "Pin column",
+    "reset": "Restore defaults",
+    "subtitle": "Choose which columns are shown, drag to reorder them, and pin the ones that stay on the left while you scroll.",
+    "title": "Configure table",
+    "unpin": "Unpin column"
+  },
+  "users": {
+    "columns": {
+      "age": "Age",
+      "birthDate": "Birth date",
+      "bloodGroup": "Blood group",
+      "city": "City",
+      "company": "Company",
+      "country": "Country",
+      "email": "Email",
+      "eyeColor": "Eye color",
+      "gender": "Gender",
+      "height": "Height",
+      "image": "Photo",
+      "name": "Name",
+      "phone": "Phone",
+      "role": "Role",
+      "state": "State",
+      "username": "Username",
+      "weight": "Weight"
+    },
+    "subtitle": "Browse, filter and analyse the users.",
+    "tabs": {
+      "distribution": "Distribution",
+      "table": "Table"
+    },
+    "title": "Users"
+  },
+  "validation": {
+    "INVALID_FORMAT": "invalid format",
+    "INVALID_OPTION": "invalid option",
+    "INVALID_TYPE": "invalid type of value",
+    "INVALID_VALUE": "invalid value",
+    "REQUIRED": "this field is required",
+    "TOO_LARGE": "value too large (maximum: {max})",
+    "TOO_LONG": "too long (maximum length: {max_length})",
+    "TOO_SHORT": "too short (minimum length: {min_length})",
+    "TOO_SMALL": "value too small (minimum: {min})",
+    "UNKNOWN_FIELD": "field not allowed"
+  }
+}

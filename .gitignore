@@ -1,0 +1,23 @@
+# Backend (Python)
+backend/.venv/
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.pytest_cache/
+
+# Frontend (Node)
+frontend/node_modules/
+node_modules/
+frontend/dist/
+dist/
+
+# Docs
+*.md
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

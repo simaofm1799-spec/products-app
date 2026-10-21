@@ -1,0 +1,14 @@
+{
+  "name": "stockly",
+  "private": true,
+  "scripts": {
+    "setup": "npm install && npm --prefix frontend install && python -m venv backend/.venv && backend\\.venv\\Scripts\\python -m pip install -r backend/requirements.txt",
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:backend": "nodemon",
+    "dev:frontend": "npm --prefix frontend run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "nodemon": "^3.1.14"
+  }
+}

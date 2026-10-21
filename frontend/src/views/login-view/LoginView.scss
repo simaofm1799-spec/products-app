@@ -1,0 +1,129 @@
+.login-view {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  /* top space so the card is not covered on small screens */
+  padding: calc(4rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom));
+  overflow: hidden;
+
+  &__blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.55;
+    pointer-events: none;
+
+    @media (max-width: 600px) {
+      filter: blur(60px);
+    }
+
+    .v-theme--brandLight & {
+      opacity: 0.3;
+    }
+
+    &--pink {
+      width: 380px;
+      height: 380px;
+      background: #e6188d;
+      top: -100px;
+      left: -80px;
+
+      @media (max-width: 600px) {
+        width: 240px;
+        height: 240px;
+      }
+    }
+
+    &--purple {
+      width: 420px;
+      height: 420px;
+      background: #7b3fa0;
+      bottom: -140px;
+      left: 30%;
+
+      @media (max-width: 600px) {
+        width: 240px;
+        height: 240px;
+      }
+    }
+
+    &--cyan {
+      width: 340px;
+      height: 340px;
+      background: #00b4e6;
+      top: 15%;
+      right: -90px;
+
+      @media (max-width: 600px) {
+        width: 240px;
+        height: 240px;
+      }
+    }
+  }
+
+  &__card {
+    position: relative;
+    padding: 24px;
+    background: rgba(var(--v-theme-surface), 0.72) !important;
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+
+    @media (min-width: 600px) {
+      padding: 32px;
+    }
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  &__logo {
+    background: linear-gradient(135deg, #e6188d, #7b3fa0 55%, #00b4e6);
+    box-shadow: 0 8px 24px rgba(230, 24, 141, 0.35);
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 2rem;
+  }
+
+  &__subtitle {
+    font-size: 0.875rem;
+    opacity: 0.6;
+    margin-top: 4px;
+  }
+
+  &__alert {
+    margin-bottom: 16px;
+  }
+
+  &__submit {
+    background: linear-gradient(90deg, #e6188d, #7b3fa0 55%, #00b4e6);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(123, 63, 160, 0.45);
+    }
+  }
+
+  &__hint {
+    font-size: 0.75rem;
+    opacity: 0.6;
+    text-align: center;
+    margin-top: 24px;
+  }
+
+  &__code {
+    color: rgb(var(--v-theme-info));
+  }
+}

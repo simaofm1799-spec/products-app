@@ -1,0 +1,85 @@
+.app-shell {
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-inline-start: 8px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  &__logo {
+    background: linear-gradient(135deg, #e6188d, #7b3fa0 55%, #00b4e6);
+  }
+
+  &__name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  &__profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-primary), 0.1),
+      rgba(var(--v-theme-info), 0.1)
+    );
+  }
+
+  &__profile-info {
+    min-width: 0;
+  }
+
+  &__profile-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  &__profile-email {
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    opacity: 0.7;
+    overflow-wrap: anywhere;
+  }
+
+  /* less space between the icon and the text of the list items (Vuetify's default is 32px) */
+  &__menu,
+  &__nav {
+    --v-list-prepend-gap: 12px;
+  }
+
+  &__nav {
+    padding: 12px;
+  }
+
+  &__languages {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__switch {
+    flex-grow: 0;
+
+    /* smaller switch: only the control is shrunk */
+    :deep(.v-selection-control__wrapper) {
+      zoom: 0.75;
+    }
+  }
+
+  &__lang {
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0.5;
+
+    &--active {
+      opacity: 1;
+      color: rgb(var(--v-theme-primary));
+    }
+  }
+}
